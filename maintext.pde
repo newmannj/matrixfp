@@ -1,39 +1,54 @@
 class MainText{
   String text = "FALSEPOCKET";
-  ArrayList<Pos> randPositions;
   ArrayList<Pos> positions;
+  ArrayList<Pos> normalPositions;
   int textAlpha = 100;
   int textFade = 2;
-  int xpos, ypos;
-  int shiftAmount = 15;
+  Pos centerPos;
   boolean centered = true;
   MainText() {
-    //generate list of random coordinates
-    randPositions = new ArrayList<Pos>();
-    for(int i = 0; i < text.length(); i++) {
-        int randx = round(random(1) * width/2);
-        int randy = round(random(1) * height/2);
-        Pos pToAdd = new Pos(randx, randy);
-        randPositions.add(pToAdd);
-    }
+    //init center pos
+    centerPos = new Pos(width/2, height/2);
     //generate pre-determined list of random coordinates
     positions = new ArrayList<Pos>();
+    normalPositions = new ArrayList<Pos>();
     for(int i = 1; i < 6; i++) {
       int newX = i * width/6;
-      Pos newPos = new Pos(newX, height/4);
+      int newY = height/2 - MT_FONT_SIZE;
+      Pos newPos = new Pos(newX, newY);
       positions.add(newPos);
     }
     for(int i = 1; i < 8; i++) {
       int newX = i * width/7;
-      Pos newPos = new Pos(newX, (height/4 * 3));
+      int newY = height/2 + MT_FONT_SIZE;
+      Pos newPos = new Pos(newX, newY);
       positions.add(newPos);
+    }
+    for(Pos p: positions) {
+      Pos pNew = new Pos(p);
+      normalPositions.add(pNew);
     }
   }
   
+  void printNormal() {
+    print("Normal[");
+    for(Pos p: normalPositions) {
+      print("(" + p.x + ", " + p.y + ")");
+    }
+    print("]\n");
+  }
+  
+  void printPosns() {
+    print("Posns:[");
+    for(Pos p: positions) {
+      print("(" + p.x + ", " + p.y + ")");
+    }
+    print("]\n");
+  }
   
   void show() {
     if (centered) {
-      text(text, xpos, ypos);
+      text(text, centerPos.x, centerPos.y);
     } else {
       for(int i = 0; i < text.length(); i++) {
         Pos curPos = positions.get(i);
@@ -43,54 +58,53 @@ class MainText{
     
   }
   
-  void doGlitch() {
-    float rand = random(1);
-    if (rand < 0.08) {
-      if (rand <= 0.02) {
-      ypos = ypos - shiftAmount;
-      } else if (rand > 0.02 && rand <= 0.04) {
-        ypos = ypos + shiftAmount;
-      } else if (rand > 0.04 && rand <= 0.06) {
-        xpos = xpos + shiftAmount;
-      } else {
-        xpos = xpos - shiftAmount; 
-      }
+  //This does a glitch for either main text or separate regions.
+  void doGlitch(int shiftAmount) {
+    if(centered) {
+      centerPos = doGlitch(centerPos, shiftAmount);
     } else {
-      xpos = width/2;
-      ypos = height/2;
+        for(int i = 0; i < positions.size(); i++) {
+            Pos copyP = new Pos(normalPositions.get(i));
+            positions.set(i, doGlitch(copyP, 40));
+        }
     }
   }
   
+  Pos doGlitch(Pos p, int shiftAmount) {
+    float rand = random(1);
+    if (rand < 0.08) {
+      if (rand <= 0.02) {
+      p.y = p.y - shiftAmount;
+      } else if (rand > 0.02 && rand <= 0.04) {
+        p.y = p.y + shiftAmount;
+      } else if (rand > 0.04 && rand <= 0.06) {
+        p.x = p.x + shiftAmount;
+      } else {
+        p.x = p.x - shiftAmount; 
+      }
+    } else {
+      //Handle center position here.
+      centerPos.y = height/2;
+      centerPos.x = width/2;
+    }
+    return p;
+  }
+  
+  //Randomly change alpha value for jitter effect.
   void changeAlpha(){ 
     textAlpha = round(random(1) * 600.0f);
   }
   
-  //Make some wild stuff happen
-  void doBigGlitch() {
-    
-    float rand = random(1);
-    
-  }
-  
-  //Moves text from center to expanded after certain amountof time.
-  void changeCentered() {
-    if(random(1) < 0.01) {
-      this.centered = !this.centered;
-    }
-  }
-  
+  //Change the way that "False Pocket" is presented. 
   void change() {
     this.centered = !this.centered;
   }
   
   
   void draw() {
+    noCursor();
     changeAlpha();
-    if(centered){
-      doGlitch();
-    } else {
-      doGlitch();
-    }
+    doGlitch(15);
     fill(255, 255, 255, textAlpha);
     this.show();
   }

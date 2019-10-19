@@ -25,6 +25,15 @@ void setup() {
   timeInterval = 5000.0f;
 }
 
+//Change fp text after timeInterval
+void changePos() {
+  if(millis() > timeInterval + timePast) {
+    timePast = millis();
+    mt.change();
+  }
+}
+
+//If we want to trigger externally.
 void handleKeyPressed(){
   if(keyPressed) {
     if(key == 'f') {
@@ -35,6 +44,7 @@ void handleKeyPressed(){
 
 void draw() {
   handleKeyPressed();
+  changePos();
   background(0);
   textFont(fpFont);
   mt.draw();
