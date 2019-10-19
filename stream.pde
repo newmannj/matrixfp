@@ -19,10 +19,9 @@ class Stream{
  }
  
  void update() {
-   textSize(FONT_SIZE);
    if(isFalseP) {
      //See if a false pocket string should be triggered.
-     if(random(1) < 0.001) {
+     if(random(1) < 0.01) {
        doFP = true;
      }
    }
