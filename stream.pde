@@ -11,7 +11,7 @@ class Stream{
    chars = new ArrayList<Char>(); 
    numChar= round(random(10,50));
    
-   speed = round(random(10,80));
+   speed = round(random(5,70));
    for(int y = 0; y < numChar*20; y+=20){
     chars.add(new Char(tempX, y));
      

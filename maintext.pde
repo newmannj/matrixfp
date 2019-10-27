@@ -1,11 +1,13 @@
 class MainText{
   String text = "FALSEPOCKET";
+  String scrambled = "LSPECFOTEKF";
   ArrayList<Pos> positions;
   ArrayList<Pos> normalPositions;
   int textAlpha = 100;
   int textFade = 2;
   Pos centerPos;
   boolean centered = true;
+  boolean scramble = true;
   MainText() {
     //init center pos
     centerPos = new Pos(width/2, height/2);
@@ -52,7 +54,11 @@ class MainText{
     } else {
       for(int i = 0; i < text.length(); i++) {
         Pos curPos = positions.get(i);
-        text(text.charAt(i), curPos.x, curPos.y);
+        if(scramble) {
+          text(text.charAt(i), curPos.x, curPos.y);
+        } else {
+          text(text.charAt(i), curPos.x, curPos.y);
+        }  
       }
     }
     
@@ -105,6 +111,11 @@ class MainText{
     noCursor();
     changeAlpha();
     doGlitch(15);
+    if(centered) {
+      textSize(MT_FONT_SIZE);
+    } else {
+      textSize(MT_FONT_SIZE * 1.5);
+    }
     fill(255, 255, 255, textAlpha);
     this.show();
   }
