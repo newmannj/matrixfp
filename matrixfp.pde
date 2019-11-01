@@ -27,6 +27,11 @@ void settings() {
 void addMovieTitles() {
    movieTitles[0]="subway_scene1.mp4";
    movieTitles[1]="subway_scene2.mp4";
+   movieTitles[2]="subway_scene3.mp4";
+   movieTitles[3]="subway_scene4.mp4";
+   movieTitles[4]="matrix_dodge1.mp4";
+   movieTitles[5]="matrix_jump2.mp4";
+   movieTitles[6]="matrix_jump1.mp4";
 }
  
 void setup() {
@@ -34,11 +39,7 @@ void setup() {
   codeFont = createFont("arial-unicode-ms.ttf", FONT_SIZE);
   mainTextFont = createFont("Antimatrix-BWBVw.ttf", MT_FONT_SIZE);
   textAlign(CENTER, TOP);
-  subwayScene1 = new Movie(this, "subway_scene1.mp4");
-  subwayScene2 = new Movie(this, "subway_scene2.mp4");
-  subwayScene2 = new Movie(this, "subway_scene3.mp4");
-  subwayScene2 = new Movie(this, "subway_scene4.mp4");
-  totalScenes += 2;
+  totalScenes += 7;
   for(int i = 0; i < totalScenes;i ++) {
     movies.add(new Movie(this, movieTitles[i]));
   }
