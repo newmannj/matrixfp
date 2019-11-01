@@ -1,42 +1,47 @@
 PFont codeFont, mainTextFont;
 ArrayList<Stream> streams;
-int FONT_SIZE = 20;
+int FONT_SIZE = 30;
 int MT_FONT_SIZE = 150;
 MainText mt;
 float timePast, timeInterval, timePast2;
-boolean viewMobile = false;
+boolean showBigText = true;
 import processing.video.*;
-Movie myMovie;
+ArrayList<Movie> movies = new ArrayList<Movie>();
+int currentMovie = 0;
+Movie subwayScene1;
+Movie subwayScene2;
 boolean moviePlaying = false;
 //seconds
 float movieTimeInterval = 10000;
 //
-FloatList movieTimes = new FloatList();
-int timeIndex = 0;
-
+String[] movieTitles = new String[20];
+int totalScenes = 0;
+boolean kartMoviePlaying = false;
+Movie kartMovie;
 
 void settings() {
-  
-  if(viewMobile){
-    size(750, 1334, P2D);
-  } else {
-    fullScreen();
-    //size(1280, 960, P2D);
-  }
+  fullScreen();
+  //size(1280, 960, P2D);
 }
 
-void addMovieTimes() {
-   movieTimes.append(10.0);
-   movieTimes.append(40.2);
-   movieTimes.append(156.2);
+void addMovieTitles() {
+   movieTitles[0]="subway_scene1.mp4";
+   movieTitles[1]="subway_scene2.mp4";
 }
  
 void setup() {
-  addMovieTimes();
+  addMovieTitles();
   codeFont = createFont("arial-unicode-ms.ttf", FONT_SIZE);
   mainTextFont = createFont("Antimatrix-BWBVw.ttf", MT_FONT_SIZE);
   textAlign(CENTER, TOP);
-  myMovie = new Movie(this, "matrix_subway_fight.mp4");
+  subwayScene1 = new Movie(this, "subway_scene1.mp4");
+  subwayScene2 = new Movie(this, "subway_scene2.mp4");
+  subwayScene2 = new Movie(this, "subway_scene3.mp4");
+  subwayScene2 = new Movie(this, "subway_scene4.mp4");
+  totalScenes += 2;
+  for(int i = 0; i < totalScenes;i ++) {
+    movies.add(new Movie(this, movieTitles[i]));
+  }
   frameRate(30);
  
   streams = new ArrayList<Stream>();
@@ -69,40 +74,65 @@ void handleKeyPressed(){
     if(key == 'f') {
       mt.change(); 
     }
+    if(key == 'm') {
+      if(moviePlaying) {
+        movies.get(currentMovie).stop();
+        timePast2 = millis();
+        currentMovie += 1;
+        if(currentMovie == totalScenes) {
+          currentMovie = 0;
+        }
+      }
+      kartMovie = new Movie(this, "mario_kart1.mp4");
+      kartMoviePlaying = true;
+      kartMovie.play();
+    }
   }
 }
 int counter = 0;
 void draw() {
+  if(kartMoviePlaying) {
+    timePast2 = millis();
+  }
   if(millis() > movieTimeInterval + timePast2) {
     if(moviePlaying){
-      myMovie.stop();
-      myMovie.volume(1);
-    } else {
-      myMovie.play();
-      //change this number yooo
-      myMovie.jump(movieTimes.get(timeIndex));
-      timeIndex += 1;
-      if(timeIndex == movieTimes.size()){
-        timeIndex = 0;
+      moviePlaying = false;
+      movies.get(currentMovie).stop();
+      timePast2 = millis();
+      currentMovie += 1;
+      if(currentMovie == totalScenes) {
+        currentMovie = 0;
       }
-      myMovie.volume(0);
+    } else {
+      movies.get(currentMovie).play();
+      timePast2 = millis();
+      moviePlaying = true;
+      println("playing movie");
     }
-    moviePlaying = !moviePlaying;
-    timePast2 = millis();
   }
   if(!moviePlaying) {
     handleKeyPressed();
     changePos();
     background(0,0,0);
     textFont(mainTextFont);
-    //mt.draw();mmm
+    if(showBigText) {
+      mt.draw();
+    }
     textFont(codeFont);
     for(Stream s:streams) {
       s.update(); 
     }
+    
+    
+    if(kartMoviePlaying) {
+      if(kartMovie.time() == kartMovie.duration()) {
+        kartMoviePlaying = false;
+      }
+      image(kartMovie, 0, 0, 1920, 1080);
+      println("playing kart");
+    }
   } else {
-    image(myMovie, 0, 0, 1920, 1080);
+      image(movies.get(currentMovie), 0, 0, 1920, 1080); 
   }
-      
   
 }

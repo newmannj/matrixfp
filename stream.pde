@@ -9,10 +9,10 @@ class Stream{
  Stream(int tempX){
    
    chars = new ArrayList<Char>(); 
-   numChar= round(random(10,50));
+   numChar= round(random(10,20));
    
    speed = round(random(5,70));
-   for(int y = 0; y < numChar*20; y+=20){
+   for(int y = 0; y < numChar*FONT_SIZE; y+=FONT_SIZE){
     chars.add(new Char(tempX, y));
      
    }
@@ -34,7 +34,7 @@ class Stream{
       chars.get(i).show();
       
       if(frameCount % speed == 0){
-        chars.get(i).ypos += 20;
+        chars.get(i).ypos += FONT_SIZE;
          
         if (i==chars.size()-1) {
           if (isFalseP) {
@@ -66,7 +66,7 @@ class Stream{
    //Checks if stream is over the level
    if (chars.get(0).ypos > height){
      for(int i = 0; i < chars.size(); i++){
-      chars.get(i).ypos=((chars.size()-1)-i)*-20;
+      chars.get(i).ypos=((chars.size()-1)-i)*-FONT_SIZE;
      }
     }
   }
